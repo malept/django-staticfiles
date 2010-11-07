@@ -5,7 +5,7 @@ from urlparse import urlparse
 from django.core.handlers.wsgi import WSGIHandler, STATUS_CODE_TEXT
 from django.http import Http404
 
-from django.contrib.staticfiles.views import serve
+from .views import serve
 
 class StaticFilesHandler(WSGIHandler):
     """
@@ -41,7 +41,7 @@ class StaticFilesHandler(WSGIHandler):
         return urllib.url2pathname(relative_url)
 
     def serve(self, request, path):
-        from django.contrib.staticfiles import finders
+        from . import finders
         absolute_path = finders.find(path)
         if not absolute_path:
             raise Http404('%r could not be matched to a static file.' % path)

@@ -8,7 +8,7 @@ urlpatterns = []
 # only serve non-fqdn URLs
 if settings.DEBUG:
     urlpatterns += patterns('',
-        url(r'^(?P<path>.*)$', 'django.contrib.staticfiles.views.serve'),
+        url(r'^(?P<path>.*)$', 'staticfiles.views.serve'),
     )
 
 def staticfiles_urlpatterns(prefix=None):

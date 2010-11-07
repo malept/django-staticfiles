@@ -17,7 +17,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpRespons
 from django.template import loader, Template, Context, TemplateDoesNotExist
 from django.utils.http import http_date
 
-from django.contrib.staticfiles import finders
+from . import finders
 
 
 def serve(request, path, document_root=None, show_indexes=False):
@@ -27,14 +27,14 @@ def serve(request, path, document_root=None, show_indexes=False):
 
     To use, put a URL pattern such as::
 
-        (r'^(?P<path>.*)$', 'django.contrib.staticfiles.views.serve')
+        (r'^(?P<path>.*)$', 'staticfiles.views.serve')
 
     in your URLconf.
 
     If you provide the ``document_root`` parameter, the file won't be looked
     up with the staticfiles finders, but in the given filesystem path, e.g.::
 
-    (r'^(?P<path>.*)$', 'django.contrib.staticfiles.views.serve', {'document_root' : '/path/to/my/files/'})
+    (r'^(?P<path>.*)$', 'staticfiles.views.serve', {'document_root' : '/path/to/my/files/'})
 
     You may also set ``show_indexes`` to ``True`` if you'd like to serve a
     basic index of the directory.  This index view will use the

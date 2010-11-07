@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.files.storage import FileSystemStorage
 from django.utils.importlib import import_module
 
-from django.contrib.staticfiles import utils
+from . import utils
 
 
 class StaticFilesStorage(FileSystemStorage):

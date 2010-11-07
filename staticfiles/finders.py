@@ -7,8 +7,8 @@ from django.utils.datastructures import SortedDict
 from django.utils.functional import memoize, LazyObject
 from django.utils.importlib import import_module
 
-from django.contrib.staticfiles import utils
-from django.contrib.staticfiles.storage import AppStaticStorage
+from . import utils
+from .storage import AppStaticStorage
 
 _finders = {}
 

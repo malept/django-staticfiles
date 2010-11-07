@@ -3,11 +3,10 @@ import sys
 import shutil
 from optparse import make_option
 
-from django.conf import settings
 from django.core.files.storage import get_storage_class
 from django.core.management.base import CommandError, NoArgsCommand
 
-from django.contrib.staticfiles import finders
+from ... import finders, settings
 
 class Command(NoArgsCommand):
     """
@@ -42,7 +41,7 @@ class Command(NoArgsCommand):
         self.copied_files = set()
         self.symlinked_files = set()
         self.unmodified_files = set()
-        self.destination_storage = get_storage_class(settings.STATICFILES_STORAGE)()
+        self.destination_storage = get_storage_class(settings.STORAGE)()
 
         try:
             self.destination_storage.path('')
@@ -82,7 +81,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
             self.stdout.write("\n%s static file%s %s to '%s'%s.\n"
                               % (actual_count, actual_count != 1 and 's' or '',
                                  symlink and 'symlinked' or 'copied',
-                                 settings.STATICFILES_ROOT,
+                                 settings.ROOT,
                                  unmodified_count and ' (%s unmodified)'
                                  % unmodified_count or ''))
 
@@ -94,7 +93,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
         source_path = source_storage.path(source)
         try:
             source_last_modified = source_storage.modified_time(source)
-        except (OSError, NotImplementedError):
+        except (OSError, NotImplementedError, AttributeError):
             source_last_modified = None
         if prefix:
             destination = '/'.join([prefix, source])
@@ -120,7 +119,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
             try:
                 destination_last_modified = \
                     self.destination_storage.modified_time(destination)
-            except (OSError, NotImplementedError):
+            except (OSError, NotImplementedError, AttributeError):
                 # storage doesn't support ``modified_time`` or failed.
                 pass
             else:
