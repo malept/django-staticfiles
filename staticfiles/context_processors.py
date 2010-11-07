@@ -1,4 +1,7 @@
-from staticfiles.settings import URL
+from django.conf import settings
 
-def static_url(request):
-    return {'STATIC_URL': URL}
+def staticfiles(request):
+    return {
+        'STATICFILES_URL': settings.STATICFILES_URL,
+        'MEDIA_URL': settings.MEDIA_URL,
+    }
