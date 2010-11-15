@@ -187,10 +187,14 @@ Type 'yes' to continue, or 'no' to cancel: """)
             return self.STATUS_SKIP, self.REASON_ALREADY_LINKED
         elif self.destination_storage.exists(destination):
             if self.file_has_changed(source_storage, source, destination):
-                destination_is_link = os.path.islink(
-                    self.destination_storage.path(destination))
-                if (not self._symlink and not destination_is_link):
-                    return self.STATUS_SKIP, self.REASON_NOT_MODIFIED
+                try:
+                    destination_is_link = os.path.islink(
+                        self.destination_storage.path(destination))
+                    if (not self._symlink and not destination_is_link):
+                        return self.STATUS_SKIP, self.REASON_NOT_MODIFIED
+                except NotImplementedError:
+                    # ignore
+                    pass
         return self.STATUS_COPY, None
 
     def file_has_changed(self, source_storage, source, destination):
