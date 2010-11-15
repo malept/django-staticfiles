@@ -115,13 +115,13 @@ Type 'yes' to continue, or 'no' to cancel: """)
             destination = source
         self._symlink = options['link']
 
-        status, reason = self.file_status(source_storage, source, destination)
+        status, detail = self.file_status(source_storage, source, destination)
 
         if status == self.STATUS_SKIP:
             if self._verbosity >= 2:
                 self.stdout.write('Skipping "%s" (%s)\n' % \
-                                  (destination, self.REASONS[reason]))
-            if reason == self.REASON_NOT_MODIFIED:
+                                  (destination, self.REASONS[detail]))
+            if detail == self.REASON_NOT_MODIFIED:
                 self.unmodified_files.add(destination)
             return False
 
@@ -177,7 +177,8 @@ Type 'yes' to continue, or 'no' to cancel: """)
 
     def file_status(self, source_storage, source, destination):
         '''Determines the status of the file (one of ``STATUS_COPY`` or
-        ``STATUS_SKIP``), with an optional reason (e.g., for skipping).
+        ``STATUS_SKIP``), with an optional detail (e.g., the reason for
+        skipping).
         '''
         if destination in self.copied_files:
             return self.STATUS_SKIP, self.REASON_ALREADY_COPIED
