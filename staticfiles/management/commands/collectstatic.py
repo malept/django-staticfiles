@@ -115,7 +115,8 @@ Type 'yes' to continue, or 'no' to cancel: """)
             destination = source
         self._symlink = options['link']
 
-        status, detail = self.file_status(source_storage, source, destination)
+        status, detail = self.file_status(source_storage, source, prefix,
+                                          destination)
 
         if status == self.STATUS_SKIP:
             if self._verbosity >= 2:
@@ -175,7 +176,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
             self.copied_files.add(destination)
         return True
 
-    def file_status(self, source_storage, source, destination):
+    def file_status(self, source_storage, source, prefix, destination):
         '''Determines the status of the file (one of ``STATUS_COPY`` or
         ``STATUS_SKIP``), with an optional detail (e.g., the reason for
         skipping).
