@@ -108,6 +108,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
         Attempt to copy (or symlink) ``source`` to ``destination``,
         returning True if successful.
         """
+        source_local = True
         source_path = source_storage.path(source)
         if prefix:
             destination = '/'.join([prefix, source])
@@ -118,6 +119,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
         status, detail = self.file_status(source_storage, source, prefix,
                                           destination)
 
+        source_file = None
         if status == self.STATUS_SKIP:
             if self._verbosity >= 2:
                 self.stdout.write('Skipping "%s" (%s)\n' % \
@@ -125,6 +127,12 @@ Type 'yes' to continue, or 'no' to cancel: """)
             if detail == self.REASON_NOT_MODIFIED:
                 self.unmodified_files.add(destination)
             return False
+        elif status == self.STATUS_COPY and hasattr(detail, 'file'):
+            # the source was replaced
+            source_file = detail
+            source = detail.name
+            source_path = getattr(detail, 'path', detail.name)
+            source_local = isinstance(detail.file, file)
 
         if self._dry_run:
             if self._verbosity >= 2:
@@ -157,7 +165,7 @@ Type 'yes' to continue, or 'no' to cancel: """)
                     self.stdout.write("Pretending to copy '%s' to '%s'\n"
                                       % (source_path, destination))
             else:
-                if self.destination_local:
+                if source_local and self.destination_local:
                     destination_path = self.destination_storage.path(destination)
                     try:
                         os.makedirs(os.path.dirname(destination_path))
@@ -168,7 +176,8 @@ Type 'yes' to continue, or 'no' to cancel: """)
                         self.stdout.write("Copying '%s' to '%s'\n"
                                           % (source_path, destination_path))
                 else:
-                    source_file = source_storage.open(source)
+                    if not source_file:
+                        source_file = source_storage.open(source)
                     self.destination_storage.save(destination, source_file)
                     if self._verbosity >= 1:
                         self.stdout.write("Copying %s to %s\n"
