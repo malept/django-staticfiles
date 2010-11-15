@@ -109,10 +109,6 @@ Type 'yes' to continue, or 'no' to cancel: """)
         returning True if successful.
         """
         source_path = source_storage.path(source)
-        try:
-            source_last_modified = source_storage.modified_time(source)
-        except (OSError, NotImplementedError, AttributeError):
-            source_last_modified = None
         if prefix:
             destination = '/'.join([prefix, source])
         else:
